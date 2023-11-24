@@ -10,10 +10,10 @@ import org.dom4j.Element;
  * @create 2023-11-24 11:52
  */
 public class XmlBeanDefinitionReader {
-    BeanFactory beanFactory;
+    SimpleBeanFactory simpleBeanFactory;
 
-    public XmlBeanDefinitionReader(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
+    public XmlBeanDefinitionReader(SimpleBeanFactory simpleBeanFactory) {
+        this.simpleBeanFactory = simpleBeanFactory;
     }
 
     /**
@@ -26,7 +26,7 @@ public class XmlBeanDefinitionReader {
             String className = element.attributeValue("class");
             BeanDefinition beanDefinition = new BeanDefinition(beanID, className);
             // 注册 beanDefinition
-            beanFactory.registerBeanDefinition(beanDefinition);
+            simpleBeanFactory.registerBeanDefinition(beanDefinition);
         }
     }
 }

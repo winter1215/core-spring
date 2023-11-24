@@ -18,13 +18,23 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
         // 加载配置文件资源,转化成可迭代的产物
         Resource resource = new ClassPathXmlResource(fileName);
         // 解析配置文件,转化成 BeanDefinition
-        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader((SimpleBeanFactory)beanFactory);
         reader.loadBeanDefinitions(resource);
     }
 
     @Override
     public Object getBean(String beanName) throws BeansException {
         return beanFactory.getBean(beanName);
+    }
+
+    @Override
+    public boolean containsBeans(String beanName) {
+        return beanFactory.containsBeans(beanName);
+    }
+
+    @Override
+    public void registerBean(String beanName, Object obj) {
+        beanFactory.registerBean(beanName,obj);
     }
 
     @Override

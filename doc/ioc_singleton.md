@@ -1,4 +1,5 @@
 ## 目前进度
+1. 单例 2. 事件 3. 注入 
 
 **BeanFactory 与 SingletonBeanRegister**
 

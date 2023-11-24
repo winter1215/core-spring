@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans>
+    <bean id="AService" class="com.minis.test.impl.AServiceImpl"></bean>>
+</beans>

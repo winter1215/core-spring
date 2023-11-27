@@ -11,37 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author winter
  * @create 2023-11-24 14:29
  */
-public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
     private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap<>();
+    private List<String> beanDefinitionNames = new ArrayList<>();
 
     public SimpleBeanFactory() {
     }
 
-    @Override
     // 需要时反射加载对象
     public Object getBean(String beanName) throws BeansException {
         // 先尝试直接拿取实例
         Object singleton = this.getSingleton(beanName);
-        // 还未加载则反射加载 todo: 线程安全
-        if (singleton == null) {
-            // 获取 bean 定义
-            BeanDefinition beanDefinition = beanDefinitions.get(beanName);
-            if (beanDefinition == null) {
-                throw new BeansException("bean has not registered: " + beanName);
-            }
-
-            try {
-                singleton = Class.forName(beanDefinition.getClassName()).newInstance();
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-            this.registerBean(beanDefinition.getId(), singleton);
-        }
         return singleton;
     }
 
@@ -51,12 +31,48 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
     }
 
     @Override
-    public void registerBean(String beanName, Object obj) {
-        super.registerSingleton(beanName, obj);
+    public boolean isSingleton(String beanName) {
+        return beanDefinitions.get(beanName).isSingleton();
     }
 
     @Override
-    public void registerBeanDefinition(BeanDefinition beanDefinition) {
-        beanDefinitions.put(beanDefinition.getId(), beanDefinition);
+    public boolean isPrototype(String beanName) {
+        return beanDefinitions.get(beanName).isPrototype();
+    }
+
+    @Override
+    public Class<?> getType(String beanName) {
+        return beanDefinitions.get(beanName).getClass();
+    }
+
+    @Override
+    public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
+        this.beanDefinitions.put(beanName, beanDefinition);
+        this.beanDefinitionNames.add(beanName);
+        // 注册时如果不是懒加载，就直接实例化
+        if (!beanDefinition.isLazyInit()) {
+            try {
+                // todo: 这里 createBean 是不是好一些
+                getBean(beanName);
+            } catch (BeansException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    @Override
+    public void removeBeanDefinition(String beanName) {
+
+    }
+
+    @Override
+    public BeanDefinition getBeanDefinition(String beanName) {
+        return null;
+    }
+
+    @Override
+    public boolean containsBeanDefinition(String beanName) {
+        return false;
     }
 }

@@ -17,15 +17,13 @@ public class BeanDefinition {
     */
     private String className;
 
-    public BeanDefinition(String id, String className) {
-        this.id = id;
-        this.className = className;
-    }
+    private volatile Object beanClass;
 
     /**
-    * 是否单例(默认单例)
+    * 单例还是原型(默认单例)
     */
     private String scope = SCOPE_SINGLETON;
+
     /**
     * 懒加载
     */
@@ -41,20 +39,27 @@ public class BeanDefinition {
     /**
     * 注入时的参数列表
     */
-    private ArgumentValues argumentValues;
+    private ArgumentValues constructorArgumentValues;
     /**
     * 注入时的属性列表
     */
     private PropertyValues propertyValues;
 
-    public BeanDefinition(String id, String className, boolean lazyInit, String[] dependsOn, String initMethodName, ArgumentValues argumentValues, PropertyValues propertyValues) {
+    public BeanDefinition(String id, String className) {
         this.id = id;
         this.className = className;
-        this.lazyInit = lazyInit;
-        this.dependsOn = dependsOn;
-        this.initMethodName = initMethodName;
-        this.argumentValues = argumentValues;
-        this.propertyValues = propertyValues;
+    }
+
+    public boolean hasBeanClass() {
+        return (this.beanClass instanceof Class);
+    }
+
+    public boolean isSingleton() {
+        return this.scope.equals(SCOPE_SINGLETON);
+    }
+
+    public boolean isPrototype() {
+        return this.scope.equals(SCOPE_PROTOTYPE);
     }
 
     public boolean isLazyInit() {
@@ -69,7 +74,10 @@ public class BeanDefinition {
         return dependsOn;
     }
 
-    public void setDependsOn(String[] dependsOn) {
+    /**
+    * 注意这里的语法，会简洁一些
+    */
+    public void setDependsOn(String... dependsOn) {
         this.dependsOn = dependsOn;
     }
 
@@ -81,12 +89,17 @@ public class BeanDefinition {
         this.initMethodName = initMethodName;
     }
 
-    public ArgumentValues getArgumentValues() {
-        return argumentValues;
+    public ArgumentValues getConstructorArgumentValues() {
+        return constructorArgumentValues;
     }
 
-    public void setArgumentValues(ArgumentValues argumentValues) {
-        this.argumentValues = argumentValues;
+    public void setConstructorArgumentValues(ArgumentValues constructorArgumentValues) {
+        this.constructorArgumentValues =
+                (constructorArgumentValues == null ? new ArgumentValues() : constructorArgumentValues);
+    }
+
+    public boolean hasConstructorArgumentValues() {
+        return !this.constructorArgumentValues.isEmpty();
     }
 
     public PropertyValues getPropertyValues() {
@@ -94,7 +107,7 @@ public class BeanDefinition {
     }
 
     public void setPropertyValues(PropertyValues propertyValues) {
-        this.propertyValues = propertyValues;
+        this.propertyValues = propertyValues == null ? new PropertyValues() : propertyValues;
     }
 
     public String getId() {

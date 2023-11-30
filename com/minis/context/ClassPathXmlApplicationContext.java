@@ -19,6 +19,7 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
         Resource resource = new ClassPathXmlResource(fileName);
         // 解析配置文件,转化成 BeanDefinition
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        // 将 xml 的配置项转为 bd
         reader.loadBeanDefinitions(resource);
     }
 

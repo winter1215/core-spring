@@ -1,7 +1,6 @@
 package com.minis.beans;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @create 2023-11-24 14:29
  */
 public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
-    private Map<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap<>();
+    private Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
     private List<String> beanDefinitionNames = new ArrayList<>();
 
     public SimpleBeanFactory() {
@@ -32,22 +31,22 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
 
     @Override
     public boolean isSingleton(String beanName) {
-        return beanDefinitions.get(beanName).isSingleton();
+        return beanDefinitionMap.get(beanName).isSingleton();
     }
 
     @Override
     public boolean isPrototype(String beanName) {
-        return beanDefinitions.get(beanName).isPrototype();
+        return beanDefinitionMap.get(beanName).isPrototype();
     }
 
     @Override
     public Class<?> getType(String beanName) {
-        return beanDefinitions.get(beanName).getClass();
+        return beanDefinitionMap.get(beanName).getClass();
     }
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
-        this.beanDefinitions.put(beanName, beanDefinition);
+        this.beanDefinitionMap.put(beanName, beanDefinition);
         this.beanDefinitionNames.add(beanName);
         // 注册时如果不是懒加载，就直接实例化
         if (!beanDefinition.isLazyInit()) {
@@ -68,11 +67,11 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
 
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {
-        return null;
+        return beanDefinitionMap.get(beanName);
     }
 
     @Override
     public boolean containsBeanDefinition(String beanName) {
-        return false;
+        return beanDefinitionMap.containsKey(beanName);
     }
 }

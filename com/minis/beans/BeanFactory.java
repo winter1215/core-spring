@@ -9,7 +9,7 @@ public interface BeanFactory {
     /**
     * 获取 bean
     */
-    //Object getBean(String beanName) throws BeansException;
+    Object getBean(String beanName) throws BeansException;
     /**
     * 判断是否存在
     */

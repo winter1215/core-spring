@@ -40,7 +40,7 @@ public class XmlBeanDefinitionReader {
             beanDefinition.setPropertyValues(PVS);
 
             // 将 constructor_args 配置项实例化成 bd 的一部分
-            List<Element> constructorElements = element.elements("constructor_arg");
+            List<Element> constructorElements = element.elements("constructor-arg");
             // 将 property 配置项实例化成 bd 的一部分
             ArgumentValues AVS = new ArgumentValues();
             for(Element e : constructorElements) {

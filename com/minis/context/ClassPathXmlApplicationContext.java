@@ -9,7 +9,7 @@ import com.minis.core.Resource;
  * @author winter
  * @create 2023-11-24 14:44
  */
-public class ClassPathXmlApplicationContext implements BeanFactory {
+public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationEventPublisher {
     SimpleBeanFactory beanFactory;
     public ClassPathXmlApplicationContext(String fileName) {
         // 容器启动的过程
@@ -23,6 +23,11 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
         reader.loadBeanDefinitions(resource);
     }
 
+
+    @Override
+    public Object getBean(String beanName) throws BeansException {
+        return beanFactory.getBean(beanName);
+    }
 
     @Override
     public boolean containsBeans(String beanName) {
@@ -42,5 +47,10 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
     @Override
     public Class<?> getType(String beanName) {
         return null;
+    }
+
+    @Override
+    public void publishEvent(ApplicationEvent event) {
+
     }
 }

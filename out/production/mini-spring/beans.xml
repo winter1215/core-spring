@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans>
-    <bean id="AService" class="com.minis.test.impl.AServiceImpl"></bean>>
+    <bean id="aservice" class="com.minis.test.impl.AServiceImpl">
+        <!-- 属性注入 -->
+        <property type="String" name="property1" value="Hello World!"/>
+        <property type="String" name="property2" value="Hello property inject!"/>
+        <constructor-arg type="String" name="name" value="abc"/>
+        <constructor-arg type="int" name="level" value="3"/>
+    </bean>>
 </beans>
